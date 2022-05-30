@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": ".."
+		},
+		{
+			"name": "Ronaldo @ Enter",
+			"uri": "gitlens://7b22726566223a22456e746572222c227265706f50617468223a22633a2f55736572732f526f6e616c646f227d/c:/Users/Ronaldo?{\"ref\":\"Enter\"}"
+		}
+	],
+	"settings": {
+		"git.ignoreLimitWarning": true
+	}
+}
